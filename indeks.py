@@ -48,31 +48,67 @@ def index_documents(documents: list[str], queries: list[str]) -> list[list[int]]
         list[list[int]]: Lista wyników dla kolejnych zapytań.
     """
     ### TUTAJ PODAJ ROZWIĄZANIE ZADANIA
+    wyniki = []
+
+    przetworzone_dokumenty = []
+    for dokument in dokumenty:
+        dokument = dokument.lower()
+        dokument = dokument.replace(",", "")
+        dokument = dokument.replace(".", "")
+        slowa = dokument.split()
+        przetworzone_dokumenty.append(slowa)
+
+    for zapytanie in zapytania:
+        zapytanie = zapytanie.lower()
+        dopasowania = []
+
+        for numer in range(len(przetworzone_dokumenty)):
+            dokument = przetworzone_dokumenty[numer]
+            ile_razy = dokument.count(zapytanie)
+
+            if ile_razy > 0:
+                dopasowania.append([numer, ile_razy])
+
+        for i in range(len(dopasowania)):
+            for j in range(len(dopasowania) - 1):
+                pierwsze = dopasowania[j]
+                drugie = dopasowania[j + 1]
+
+                if pierwsze[1] < drugie[1]:
+                    dopasowania[j], dopasowania[j + 1] = drugie, pierwsze
+                elif pierwsze[1] == drugie[1] and pierwsze[0] > drugie[0]:
+                    dopasowania[j], dopasowania[j + 1] = drugie, pierwsze
+
+        lista_numerow=[]
+        for para in dopasowania:
+            lista_numerow.append(para[0])
+
+        wyniki.append(lista_numerow)
 
     ### return [[]] - powinno być zmienione i zwrócić prawdziwy wynik (zgodny z oczekiwaniami)
-    return [[]]
+    return wyniki
 
 
 # Przykładowe wywołanie:
 if __name__ == "__main__":
     # Pobranie liczby dokumentów
-    n = int(input("Podaj liczbę dokumentów: "))
-    documents = []
+    liczba_dokumentow = int(input("Podaj liczbę dokumentów: "))
+    dokumenty = []
     print("Wprowadź kolejne dokumenty:")
-    for _ in range(n):
-        documents.append(input())
+    for _ in range(liczba_dokumentow):
+        dokumenty.append(input())
 
     # Pobranie liczby zapytań
-    m = int(input("Podaj liczbę zapytań: "))
-    queries = []
+    liczba_zapytan = int(input("Podaj liczbę zapytań: "))
+    zapytania = []
     print("Wprowadź kolejne zapytania:")
-    for _ in range(m):
-        queries.append(input().strip())
+    for _ in range(liczba_zapytan):
+        zapytania.append(input().strip())
 
     # Przetworzenie zapytań
-    results = index_documents(documents, queries)
+    wyniki = index_documents(dokumenty, zapytania)
 
     # Wypisanie wyników
     print("Wyniki:")
-    for res in results:
-        print(res)
+    for wynik in wyniki:
+        print(wynik)
